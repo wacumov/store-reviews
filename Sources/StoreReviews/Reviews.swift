@@ -30,7 +30,11 @@ public enum Reviews {
         else {
             return
         }
-        SKStoreReviewController.requestReview(in: scene)
+        if #available(iOS 16.0, *) {
+            AppStore.requestReview(in: scene)
+        } else {
+            SKStoreReviewController.requestReview(in: scene)
+        }
         UserDefaults.standard.set(currentVersion, forKey: lastVersionPromptedForReviewKey)
         UserDefaults.standard.set(Date(), forKey: lastPromptedDateKey)
     }
