@@ -3,7 +3,7 @@ import SwiftUI
 
 #if os(iOS)
 public enum Reviews {
-    public static let daysBetweenPrompts: Double = 2
+    public static let defaultDaysBetweenPrompts: Double = 120
 
     private static let lastVersionPromptedForReviewKey = "lastVersionPromptedForReviewKey"
     private static let lastPromptedDateKey = "lastPromptedDateKey"
@@ -13,10 +13,10 @@ public enum Reviews {
     }
 
     @available(iOS 14.0, *)
-    @MainActor public static func requestIfNeeded() {
+    @MainActor public static func requestIfNeeded(daysBetweenPrompts: Double = defaultDaysBetweenPrompts) {
         guard
             !hasRequestedForCurrentVersion(),
-            !hasRequestedRecently()
+            !hasRequestedRecently(daysBetweenPrompts: daysBetweenPrompts)
         else {
             return
         }
@@ -51,7 +51,7 @@ public enum Reviews {
         return currentVersion == lastVersionPromptedForReview
     }
 
-    private static func hasRequestedRecently() -> Bool {
+    private static func hasRequestedRecently(daysBetweenPrompts: Double) -> Bool {
         guard let lastPromptedDate = UserDefaults.standard.object(forKey: lastPromptedDateKey) as? Date else {
             return false
         }
